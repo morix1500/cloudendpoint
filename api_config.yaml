@@ -1,0 +1,33 @@
+type: google.api.Service
+config_version: 3
+
+name: echo-api.endpoints.sample-202800.cloud.goog
+
+title: Echo API
+apis:
+  - name: echo.EchoService
+
+usage:
+  rules:
+    - selector: "echo.EchoService.Echo1"
+      allow_unregistered_calls: true
+    - selector: "echo.EchoService.Echo2"
+      allow_unregistered_calls: true
+    - selector: "echo.EchoService.Echo3"
+      allow_unregistered_calls: false 
+    - selector: "echo.EchoService.Echo4"
+      allow_unregistered_calls: false 
+
+authentication:
+  providers:
+    - id: firebase
+      jwks_uri: https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com
+      issuer: https://securetoken.google.com/sample-202800
+      audiences: "sample-202800"
+  rules:
+    - selector: "echo.EchoService.Echo2"
+      requirements:
+        - provider_id: firebase
+    - selector: "echo.EchoService.Echo4"
+      requirements:
+        - provider_id: firebase

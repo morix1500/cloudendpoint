@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <script>
+      var config = {
+        apiKey: "AIzaSyCoN-G_MQHg3BbrU8fNKihflgHTqDFPy6g",
+        authDomain: "sample-202800.firebaseapp.com",
+        databaseURL: "https://sample-202800.firebaseio.com",
+        storageBucket: "sample-202800.appspot.com",
+        messagingSenderId: "290881949686",
+      };
+      firebase.initializeApp(config);
+
+      let name = "hoge@example.com";
+      let pass = "test1234";
+      let apikey = "APIキー";
+
+      firebase.auth().createUserWithEmailAndPassword(name, pass)
+        .then(user => {
+          console.log("create account: ", user.email);
+          login(name, pass, getEcho);
+        })
+        .catch(error => {
+          console.log(error.message);
+          login(name, pass, getEcho);
+        });
+
+      function login(name, pass, callback) {
+        firebase.auth().signInWithEmailAndPassword(name, pass).then(
+          user => {
+            user.getIdToken(true).then(idToken => {
+              document.getElementById("jwt").innerHTML = idToken;
+              callback(idToken)
+            })
+            .catch(error => {
+              console.log(error.message);
+            });
+          },
+          err => {
+            console.log(err.message);
+          }
+        )
+      }
+      function getEcho(token) {
+        console.log(token);
+        let instance = axios.create({
+          baseURL: "http://localhost:8082/",
+          headers: {
+            "x-api-key": apikey,
+            "authorization": "Bearer " + token
+          }
+        });
+        requestEchoServer(instance, "/v1/echo/1", "echo1");
+        requestEchoServer(instance, "/v1/echo/2", "echo2");
+        requestEchoServer(instance, "/v1/echo/3", "echo3");
+        requestEchoServer(instance, "/v1/echo/4", "echo4");
+      }
+
+      function requestEchoServer(instance, path, msg) {
+        instance.post(path, {
+            message: msg 
+          })
+          .then(res => {
+            console.log(res.data);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    </script>
+    <p>Hello</p>
+    <p>JWT: <span id="jwt"></span></p>
+  </body>
+</html>

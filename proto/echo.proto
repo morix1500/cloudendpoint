@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package echo;
+
+import "google/api/annotations.proto";
+
+service EchoService {
+	rpc Echo1 (Request) returns (Response) {
+		option (google.api.http) = {
+			post: "/v1/echo/1"
+			body: "message"
+		};
+	}
+	rpc Echo2 (Request) returns (Response) {
+		option (google.api.http) = {
+			post: "/v1/echo/2"
+			body: "message"
+		};
+	}
+	rpc Echo3 (Request) returns (Response) {
+		option (google.api.http) = {
+			post: "/v1/echo/3"
+			body: "message"
+		};
+	}
+	rpc Echo4 (Request) returns (Response) {
+		option (google.api.http) = {
+			post: "/v1/echo/4"
+			body: "message"
+		};
+	}
+}
+
+message Msg {
+	string message = 1;
+}
+
+message Request {
+	Msg message = 1;
+}
+
+message Response {
+	Msg message = 1;
+}
